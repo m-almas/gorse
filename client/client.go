@@ -28,10 +28,11 @@ import (
 type GorseClient struct {
 	entryPoint string
 	apiKey     string
+	basicAuth  string
 	httpClient http.Client
 }
 
-func NewGorseClient(entryPoint, apiKey string) *GorseClient {
+func NewGorseClient(entryPoint, apiKey string, basicAuth string) *GorseClient {
 	return &GorseClient{
 		entryPoint: entryPoint,
 		apiKey:     apiKey,
@@ -102,6 +103,7 @@ func request[Response any, Body any](ctx context.Context, c *GorseClient, method
 		return result, err
 	}
 	req.Header.Set("X-API-Key", c.apiKey)
+	req.Header.Set("Authorization", c.basicAuth)
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
